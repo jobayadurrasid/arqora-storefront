@@ -3,8 +3,10 @@ const env = import.meta.env;
 
 const config = {
   app: {
+    currency: env.VITE_CURRENCY || "BDT",
+    theme: env.VITE_THEME || "classic",
     name: env.VITE_APP_NAME || "Arqora Store",
-    environment: env.VITE_APP_ENV || "development"
+    environment: env.VITE_APP_ENV || "development",
   },
 
   api: {

@@ -1,7 +1,13 @@
-import { RegisterPage } from './features/auth'
+import { RouterProvider } from 'react-router'
+import { AuthProvider } from '@/stores/AuthProvider'
+import { router } from '@/routes'
 
 function App() {
-  return <RegisterPage />
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  )
 }
 
 export default App

@@ -2,6 +2,7 @@ import { useState, type FormEvent, type ChangeEvent } from 'react'
 import { isAxiosError } from 'axios'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '@/stores/authContextDef'
+import { ThemeSwitcher } from '@/components/common/ThemeSwitcher'
 import type { RegisterFormValues, RegisterFormErrors } from '../types/auth.types'
 
 const initialValues: RegisterFormValues = {
@@ -124,47 +125,48 @@ export function RegisterPage() {
       .join(' ') || 'Valued Customer'
 
   return (
-    <div className="min-h-svh w-full bg-[#ffffff] text-[#000000] flex flex-col">
-      {/* Top-Left Brand Header */}
-      <header className="w-full px-4 pt-5 pb-2 sm:px-8 sm:pt-7 md:px-12">
+    <div className="min-h-svh w-full bg-primary text-secondary flex flex-col">
+      {/* Top-Left Brand Header & Theme Switcher */}
+      <header className="w-full px-4 pt-5 pb-2 sm:px-8 sm:pt-7 md:px-12 flex items-center justify-between">
         <Link
           to="/"
-          className="inline-block text-2xl sm:text-3xl font-bold tracking-[0.22em] uppercase text-[#000000]"
+          className="inline-block text-2xl sm:text-3xl font-bold tracking-[0.22em] uppercase text-secondary"
         >
-          A<span className="text-[#d07601]">R</span>QO
-          <span className="text-[#d07601]">R</span>A
+          A<span className="text-action">R</span>QO
+          <span className="text-action">R</span>A
         </Link>
+        <ThemeSwitcher />
       </header>
 
       {/* Responsive Centered Form Container */}
       <div className="flex-1 w-full flex items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
-        <main className="w-full max-w-md bg-[#ffffff] border border-[#000000]/15 rounded-xl p-5 sm:p-8 md:p-9">
+        <main className="w-full max-w-md bg-surface border border-secondary/15 rounded-xl p-5 sm:p-8 md:p-9">
           {submittedUser ? (
             <div
               role="status"
               aria-live="polite"
               className="text-center space-y-4 py-4"
             >
-              <div className="mx-auto w-11 h-11 rounded-full bg-[#d07601] text-[#ffffff] flex items-center justify-center text-lg font-semibold">
+              <div className="mx-auto w-11 h-11 rounded-full bg-action text-action-foreground flex items-center justify-center text-lg font-semibold">
                 ✓
               </div>
-              <h2 className="text-xl font-semibold text-[#000000]">
+              <h2 className="text-xl font-semibold text-secondary">
                 Welcome, {displayName}
               </h2>
-              <p className="text-sm text-[#000000]/65">
+              <p className="text-sm text-secondary/65">
                 Your account is registered with{' '}
-                <span className="font-medium text-[#000000]">
+                <span className="font-medium text-secondary">
                   {submittedUser.email}
                 </span>
                 .
               </p>
 
               {submittedUser.address.trim() && (
-                <div className="text-left p-3.5 rounded-lg border border-[#000000]/15 bg-[#ffffff]">
-                  <span className="block text-[11px] font-medium uppercase tracking-wider text-[#000000]/50 mb-1">
+                <div className="text-left p-3.5 rounded-lg border border-secondary/15 bg-surface">
+                  <span className="block text-[11px] font-medium uppercase tracking-wider text-secondary/50 mb-1">
                     Shipping Address
                   </span>
-                  <p className="text-sm text-[#000000]">
+                  <p className="text-sm text-secondary">
                     {submittedUser.address}
                   </p>
                 </div>
@@ -174,14 +176,14 @@ export function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => navigate('/login')}
-                  className="w-full py-2.5 px-4 rounded-md bg-[#d07601] text-[#ffffff] text-sm font-medium hover:opacity-90 transition cursor-pointer"
+                  className="w-full py-2.5 px-4 rounded-md bg-action text-action-foreground text-sm font-medium hover:opacity-90 transition cursor-pointer"
                 >
                   Proceed to Sign In
                 </button>
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="w-full py-2 px-4 rounded-md border border-[#000000]/15 text-xs text-[#000000]/70 hover:text-[#000000] cursor-pointer"
+                  className="w-full py-2 px-4 rounded-md border border-secondary/15 text-xs text-secondary/70 hover:text-secondary cursor-pointer"
                 >
                   Register Another Account
                 </button>
@@ -190,10 +192,10 @@ export function RegisterPage() {
           ) : (
             <>
               <header className="mb-6">
-                <h1 className="text-2xl font-semibold tracking-tight text-[#000000]">
+                <h1 className="text-2xl font-semibold tracking-tight text-secondary">
                   Create Account
                 </h1>
-                <p className="mt-1 text-sm text-[#000000]/60">
+                <p className="mt-1 text-sm text-secondary/60">
                   Enter your details below to register.
                 </p>
               </header>
@@ -202,7 +204,7 @@ export function RegisterPage() {
                 {errors.general && (
                   <div
                     role="alert"
-                    className="p-3 rounded-md bg-[#d07601]/10 border border-[#d07601] text-xs font-semibold text-[#d07601]"
+                    className="p-3 rounded-md bg-action/10 border border-action text-xs font-semibold text-action"
                   >
                     ⚠ {errors.general}
                   </div>
@@ -213,9 +215,9 @@ export function RegisterPage() {
                   <div>
                     <label
                       htmlFor="firstName"
-                      className="block text-xs font-medium text-[#000000] mb-1.5"
+                      className="block text-xs font-medium text-secondary mb-1.5"
                     >
-                      First Name <span className="text-[#d07601]">*</span>
+                      First Name <span className="text-action">*</span>
                     </label>
                     <input
                       id="firstName"
@@ -226,10 +228,10 @@ export function RegisterPage() {
                       value={values.firstName}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 text-sm bg-[#ffffff] text-[#000000] placeholder:text-[#000000]/35 border border-[#000000]/20 rounded-md focus:outline-none focus:border-[#000000] transition"
+                      className="w-full px-3 py-2 text-sm bg-surface text-secondary placeholder:text-secondary/35 border border-secondary/20 rounded-md focus:outline-none focus:border-secondary transition"
                     />
                     {errors.firstName && (
-                      <p className="mt-1 text-xs text-[#d07601]">
+                      <p className="mt-1 text-xs text-action">
                         {errors.firstName}
                       </p>
                     )}
@@ -238,9 +240,9 @@ export function RegisterPage() {
                   <div>
                     <label
                       htmlFor="lastName"
-                      className="block text-xs font-medium text-[#000000] mb-1.5"
+                      className="block text-xs font-medium text-secondary mb-1.5"
                     >
-                      Last Name <span className="text-[#d07601]">*</span>
+                      Last Name <span className="text-action">*</span>
                     </label>
                     <input
                       id="lastName"
@@ -251,10 +253,10 @@ export function RegisterPage() {
                       value={values.lastName}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 text-sm bg-[#ffffff] text-[#000000] placeholder:text-[#000000]/35 border border-[#000000]/20 rounded-md focus:outline-none focus:border-[#000000] transition"
+                      className="w-full px-3 py-2 text-sm bg-surface text-secondary placeholder:text-secondary/35 border border-secondary/20 rounded-md focus:outline-none focus:border-secondary transition"
                     />
                     {errors.lastName && (
-                      <p className="mt-1 text-xs text-[#d07601]">
+                      <p className="mt-1 text-xs text-action">
                         {errors.lastName}
                       </p>
                     )}
@@ -265,9 +267,9 @@ export function RegisterPage() {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-xs font-medium text-[#000000] mb-1.5"
+                    className="block text-xs font-medium text-secondary mb-1.5"
                   >
-                    Email <span className="text-[#d07601]">*</span>
+                    Email <span className="text-action">*</span>
                   </label>
                   <input
                     id="email"
@@ -278,13 +280,13 @@ export function RegisterPage() {
                     value={values.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 text-sm bg-[#ffffff] text-[#000000] placeholder:text-[#000000]/35 border border-[#000000]/20 rounded-md focus:outline-none focus:border-[#000000] transition"
+                    className="w-full px-3 py-2 text-sm bg-surface text-secondary placeholder:text-secondary/35 border border-secondary/20 rounded-md focus:outline-none focus:border-secondary transition"
                   />
                   {errors.email && (
                     <p
                       id="email-error"
                       role="alert"
-                      className="mt-1.5 text-xs text-[#d07601]"
+                      className="mt-1.5 text-xs text-action"
                     >
                       {errors.email}
                     </p>
@@ -295,9 +297,9 @@ export function RegisterPage() {
                 <div>
                   <label
                     htmlFor="password"
-                    className="block text-xs font-medium text-[#000000] mb-1.5"
+                    className="block text-xs font-medium text-secondary mb-1.5"
                   >
-                    Password <span className="text-[#d07601]">*</span>
+                    Password <span className="text-action">*</span>
                   </label>
                   <div className="relative flex items-center">
                     <input
@@ -309,12 +311,12 @@ export function RegisterPage() {
                       value={values.password}
                       onChange={handleChange}
                       required
-                      className="w-full pl-3 pr-14 py-2 text-sm bg-[#ffffff] text-[#000000] placeholder:text-[#000000]/35 border border-[#000000]/20 rounded-md focus:outline-none focus:border-[#000000] transition"
+                      className="w-full pl-3 pr-14 py-2 text-sm bg-surface text-secondary placeholder:text-secondary/35 border border-secondary/20 rounded-md focus:outline-none focus:border-secondary transition"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword((prev) => !prev)}
-                      className="absolute right-2.5 text-xs text-[#000000]/60 hover:text-[#000000] cursor-pointer"
+                      className="absolute right-2.5 text-xs text-secondary/60 hover:text-secondary cursor-pointer"
                     >
                       {showPassword ? 'Hide' : 'Show'}
                     </button>
@@ -323,7 +325,7 @@ export function RegisterPage() {
                     <p
                       id="password-error"
                       role="alert"
-                      className="mt-1.5 text-xs text-[#d07601]"
+                      className="mt-1.5 text-xs text-action"
                     >
                       {errors.password}
                     </p>
@@ -335,11 +337,11 @@ export function RegisterPage() {
                   <div className="flex items-center justify-between mb-1.5">
                     <label
                       htmlFor="address"
-                      className="block text-xs font-medium text-[#000000]"
+                      className="block text-xs font-medium text-secondary"
                     >
                       Address
                     </label>
-                    <span className="text-[11px] text-[#000000]/45">
+                    <span className="text-[11px] text-secondary/45">
                       Optional
                     </span>
                   </div>
@@ -351,24 +353,24 @@ export function RegisterPage() {
                     placeholder="Street, city, postal code"
                     value={values.address}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 text-sm bg-[#ffffff] text-[#000000] placeholder:text-[#000000]/35 border border-[#000000]/20 rounded-md focus:outline-none focus:border-[#000000] transition resize-none"
+                    className="w-full px-3 py-2 text-sm bg-surface text-secondary placeholder:text-secondary/35 border border-secondary/20 rounded-md focus:outline-none focus:border-secondary transition resize-none"
                   />
                 </div>
 
-                {/* Simple Orange Button (#d07601) */}
+                {/* Action Button */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full mt-2 py-2.5 px-4 rounded-md bg-[#d07601] text-[#ffffff] text-sm font-medium hover:opacity-90 disabled:opacity-50 transition cursor-pointer"
+                  className="w-full mt-2 py-2.5 px-4 rounded-md bg-action text-action-foreground text-sm font-medium hover:opacity-90 disabled:opacity-50 transition cursor-pointer"
                 >
                   {isSubmitting ? 'Creating account...' : 'Create Account'}
                 </button>
 
-                <p className="text-center text-xs text-[#000000]/60 pt-2">
+                <p className="text-center text-xs text-secondary/60 pt-2">
                   Already have an account?{' '}
                   <Link
                     to="/login"
-                    className="text-[#d07601] font-medium hover:underline"
+                    className="text-action font-medium hover:underline"
                   >
                     Sign in
                   </Link>

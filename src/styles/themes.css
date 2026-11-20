@@ -1,0 +1,72 @@
+/* Centralized root color themes (60% primary/surface, 30% secondary, 10% action) */
+
+:root,
+[data-theme="classic"] {
+  color-scheme: light;
+  --theme-primary: #ffffff;
+  --theme-surface: #ffffff;
+  --theme-muted: #fafafa;
+  --theme-secondary: #000000;
+  --theme-secondary-foreground: #ffffff;
+  --theme-action: #d07601;
+  --theme-action-foreground: #ffffff;
+  --theme-success: #16a34a;
+  --theme-danger: #e11d48;
+  --theme-danger-foreground: #ffffff;
+}
+
+[data-theme="midnight"] {
+  color-scheme: dark;
+  --theme-primary: #0c0c0e;
+  --theme-surface: #151518;
+  --theme-muted: #1f1f24;
+  --theme-secondary: #f5f5f5;
+  --theme-secondary-foreground: #0c0c0e;
+  --theme-action: #ea8a0c;
+  --theme-action-foreground: #0c0c0e;
+  --theme-success: #22c55e;
+  --theme-danger: #fb7185;
+  --theme-danger-foreground: #0c0c0e;
+}
+
+[data-theme="sand"] {
+  color-scheme: light;
+  --theme-primary: #f7f4ef;
+  --theme-surface: #ffffff;
+  --theme-muted: #eee9e0;
+  --theme-secondary: #1f1b18;
+  --theme-secondary-foreground: #f7f4ef;
+  --theme-action: #b45309;
+  --theme-action-foreground: #ffffff;
+  --theme-success: #15803d;
+  --theme-danger: #be123c;
+  --theme-danger-foreground: #ffffff;
+}
+
+[data-theme="forest"] {
+  color-scheme: light;
+  --theme-primary: #f6f8f6;
+  --theme-surface: #ffffff;
+  --theme-muted: #eaf0ec;
+  --theme-secondary: #14261c;
+  --theme-secondary-foreground: #ffffff;
+  --theme-action: #15803d;
+  --theme-action-foreground: #ffffff;
+  --theme-success: #16a34a;
+  --theme-danger: #dc2626;
+  --theme-danger-foreground: #ffffff;
+}
+
+[data-theme="ocean"] {
+  color-scheme: light;
+  --theme-primary: #f8fafc;
+  --theme-surface: #ffffff;
+  --theme-muted: #eef2f6;
+  --theme-secondary: #0f172a;
+  --theme-secondary-foreground: #ffffff;
+  --theme-action: #2563eb;
+  --theme-action-foreground: #ffffff;
+  --theme-success: #16a34a;
+  --theme-danger: #e11d48;
+  --theme-danger-foreground: #ffffff;
+}

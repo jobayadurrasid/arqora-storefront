@@ -1,1 +1,22 @@
 @import "tailwindcss";
+@import "./styles/themes.css";
+
+@theme inline {
+  --color-primary: var(--theme-primary);
+  --color-surface: var(--theme-surface);
+  --color-muted: var(--theme-muted);
+  --color-secondary: var(--theme-secondary);
+  --color-secondary-foreground: var(--theme-secondary-foreground);
+  --color-action: var(--theme-action);
+  --color-action-foreground: var(--theme-action-foreground);
+  --color-success: var(--theme-success);
+  --color-danger: var(--theme-danger);
+  --color-danger-foreground: var(--theme-danger-foreground);
+}
+
+@layer base {
+  body {
+    background-color: var(--theme-primary);
+    color: var(--theme-secondary);
+  }
+}

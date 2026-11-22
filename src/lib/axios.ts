@@ -45,6 +45,7 @@ api.interceptors.response.use(
     const originalRequest = error.config
 
     if (
+      originalRequest &&
       error.response?.status === 401 &&
       !originalRequest._retry &&
       !originalRequest.url?.includes('/v1/auth/')

@@ -4,10 +4,26 @@ import type {
   CategoryResponse,
 } from '@/types/api'
 
+function normalizeCategories(raw: unknown): CategoryResponse[] {
+  if (Array.isArray(raw)) {
+    return raw as CategoryResponse[]
+  }
+  if (raw && typeof raw === 'object') {
+    const record = raw as Record<string, unknown>
+    if (Array.isArray(record.items)) {
+      return record.items as CategoryResponse[]
+    }
+    if (Array.isArray(record.data)) {
+      return record.data as CategoryResponse[]
+    }
+  }
+  return []
+}
+
 export const categoriesApi = {
-  getCategories: async (): Promise<CategoryResponse[]> => {
-    const response = await api.get<CategoryResponse[]>('/v1/categories/')
-    return response.data
+  getCategories: async (signal?: AbortSignal): Promise<CategoryResponse[]> => {
+    const response = await api.get<unknown>('/v1/categories/', { signal })
+    return normalizeCategories(response.data)
   },
 
   getCategory: async (categoryId: string): Promise<CategoryResponse> => {

@@ -2,6 +2,10 @@ import { Navigate, createBrowserRouter } from 'react-router'
 import { RootLayout } from '../layouts/RootLayout'
 import { CatalogPage } from '../features/products/components/CatalogPage'
 import { ProductDetailPage } from '../features/products/components/ProductDetailPage'
+import { CartPage } from '../features/cart/components/CartPage'
+import { CheckoutPage } from '../features/checkout/components/CheckoutPage'
+import { OrdersPage } from '../features/orders/components/OrdersPage'
+import { OrderDetailPage } from '../features/orders/components/OrderDetailPage'
 import { RegisterPage, LoginPage } from '../features/auth'
 
 export const router = createBrowserRouter([
@@ -27,6 +31,22 @@ export const router = createBrowserRouter([
       {
         path: 'products/:productId',
         element: <ProductDetailPage />,
+      },
+      {
+        path: 'cart',
+        element: <CartPage />,
+      },
+      {
+        path: 'checkout',
+        element: <CheckoutPage />,
+      },
+      {
+        path: 'orders',
+        element: <OrdersPage />,
+      },
+      {
+        path: 'orders/:orderId',
+        element: <OrderDetailPage />,
       },
     ],
   },

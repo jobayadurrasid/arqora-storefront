@@ -1,5 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router'
+import { isAxiosError, isCancel } from 'axios'
 import config from '@/config/config'
 import { productsApi } from '@/features/products/api/products.api'
 import { categoriesApi } from '@/features/categories/api/categories.api'
@@ -8,62 +9,98 @@ import type { CategoryResponse, ProductResponse } from '@/types/api'
 
 export function CatalogPage() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [products, setProducts] = useState<ProductResponse[]>([])
   const [categories, setCategories] = useState<CategoryResponse[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [reloadTick, setReloadTick] = useState(0)
 
   const selectedCategory = searchParams.get('category') || ''
   const searchQuery = searchParams.get('q') || ''
-  const page = parseInt(searchParams.get('page') || '1', 10)
-  const [totalPages, setTotalPages] = useState(1)
+  const rawPage = parseInt(searchParams.get('page') || '1', 10)
+  const page = Number.isFinite(rawPage) && rawPage >= 1 ? rawPage : 1
+
+  const queryKey = `${selectedCategory}|${searchQuery}|${page}|${reloadTick}`
+
+  const [fetchState, setFetchState] = useState<{
+    key: string
+    products: ProductResponse[]
+    totalPages: number
+    error: string | null
+  }>({
+    key: '',
+    products: [],
+    totalPages: 1,
+    error: null,
+  })
+
+  const isLoading = fetchState.key !== queryKey
+  const products = fetchState.key === queryKey ? fetchState.products : []
+  const totalPages = fetchState.totalPages
+  const error = fetchState.key === queryKey ? fetchState.error : null
 
   const { addToCart } = useCart()
   const [addedId, setAddedId] = useState<string | null>(null)
 
   useEffect(() => {
-    let isMounted = true
+    const controller = new AbortController()
+
     const fetchCategories = async () => {
       try {
-        const data = await categoriesApi.getCategories()
-        if (Array.isArray(data) && isMounted) {
+        const data = await categoriesApi.getCategories(controller.signal)
+        if (!controller.signal.aborted && Array.isArray(data)) {
           setCategories(data)
         }
       } catch (err) {
-        console.error('Failed to load categories', err)
+        if (!controller.signal.aborted && !isCancel(err)) {
+          console.error('Failed to load categories', err)
+        }
       }
     }
+
     fetchCategories()
     return () => {
-      isMounted = false
+      controller.abort()
     }
   }, [])
 
   useEffect(() => {
-    let isMounted = true
+    const controller = new AbortController()
 
     const fetchProducts = async () => {
       try {
-        const data = await productsApi.getProducts({
-          category_id: selectedCategory || null,
-          search: searchQuery || null,
-          page,
-          page_size: 12,
-          is_active: true,
-        })
-        if (isMounted) {
-          setProducts(data.items || [])
-          setTotalPages(data.total_pages || 1)
-          setError(null)
+        const data = await productsApi.getProducts(
+          {
+            category_id: selectedCategory || undefined,
+            search: searchQuery || undefined,
+            page,
+            page_size: 12,
+            is_active: true,
+          },
+          controller.signal
+        )
+        if (!controller.signal.aborted) {
+          setFetchState({
+            key: queryKey,
+            products: data.items || [],
+            totalPages: data.total_pages || 1,
+            error: null,
+          })
         }
       } catch (err) {
-        if (isMounted) {
-          setError('Unable to load products from server. Please try again later.')
-        }
-        console.error(err)
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
+        if (!controller.signal.aborted && !isCancel(err)) {
+          let message =
+            'Unable to load products from server. Please try again later.'
+          if (isAxiosError(err)) {
+            const detail = err.response?.data?.detail || err.response?.data?.message
+            if (typeof detail === 'string' && detail.trim()) {
+              message = detail
+            }
+          }
+          setFetchState({
+            key: queryKey,
+            products: [],
+            totalPages: 1,
+            error: message,
+          })
+          console.error(err)
         }
       }
     }
@@ -71,12 +108,15 @@ export function CatalogPage() {
     fetchProducts()
 
     return () => {
-      isMounted = false
+      controller.abort()
     }
-  }, [selectedCategory, searchQuery, page])
+  }, [selectedCategory, searchQuery, page, reloadTick, queryKey])
 
   const handleCategoryClick = (categoryId: string) => {
-    setIsLoading(true)
+    if (categoryId === selectedCategory && page === 1) {
+      setReloadTick((t) => t + 1)
+      return
+    }
     const params = new URLSearchParams(searchParams)
     if (categoryId) {
       params.set('category', categoryId)
@@ -89,12 +129,18 @@ export function CatalogPage() {
 
   const handleSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsLoading(true)
     const form = e.currentTarget
     const input = form.elements.namedItem('search') as HTMLInputElement
+    const nextQuery = input.value.trim()
+
+    if (nextQuery === searchQuery && page === 1) {
+      setReloadTick((t) => t + 1)
+      return
+    }
+
     const params = new URLSearchParams(searchParams)
-    if (input.value.trim()) {
-      params.set('q', input.value.trim())
+    if (nextQuery) {
+      params.set('q', nextQuery)
     } else {
       params.delete('q')
     }
@@ -183,11 +229,8 @@ export function CatalogPage() {
           <p className="text-sm text-action font-semibold">{error}</p>
           <button
             type="button"
-            onClick={() => {
-              setIsLoading(true)
-              setError(null)
-            }}
-            className="mt-4 px-4 py-2 text-xs font-medium rounded-md bg-secondary text-secondary-foreground"
+            onClick={() => setReloadTick((t) => t + 1)}
+            className="mt-4 px-4 py-2 text-xs font-medium rounded-md bg-secondary text-secondary-foreground cursor-pointer"
           >
             Retry
           </button>
@@ -265,7 +308,6 @@ export function CatalogPage() {
                 type="button"
                 disabled={page <= 1}
                 onClick={() => {
-                  setIsLoading(true)
                   const params = new URLSearchParams(searchParams)
                   params.set('page', String(page - 1))
                   setSearchParams(params)
@@ -281,7 +323,6 @@ export function CatalogPage() {
                 type="button"
                 disabled={page >= totalPages}
                 onClick={() => {
-                  setIsLoading(true)
                   const params = new URLSearchParams(searchParams)
                   params.set('page', String(page + 1))
                   setSearchParams(params)

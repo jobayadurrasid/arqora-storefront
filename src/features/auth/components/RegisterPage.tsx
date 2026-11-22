@@ -3,6 +3,7 @@ import { isAxiosError } from 'axios'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '@/stores/authContextDef'
 import { ThemeSwitcher } from '@/components/common/ThemeSwitcher'
+import { BrandLogo } from '@/components/common/BrandLogo'
 import type { RegisterFormValues, RegisterFormErrors } from '../types/auth.types'
 
 const initialValues: RegisterFormValues = {
@@ -128,12 +129,8 @@ export function RegisterPage() {
     <div className="min-h-svh w-full bg-primary text-secondary flex flex-col">
       {/* Top-Left Brand Header & Theme Switcher */}
       <header className="w-full px-4 pt-5 pb-2 sm:px-8 sm:pt-7 md:px-12 flex items-center justify-between">
-        <Link
-          to="/"
-          className="inline-block text-2xl sm:text-3xl font-bold tracking-[0.22em] uppercase text-secondary"
-        >
-          A<span className="text-action">R</span>QO
-          <span className="text-action">R</span>A
+        <Link to="/" className="inline-flex items-center">
+          <BrandLogo size="lg" />
         </Link>
         <ThemeSwitcher />
       </header>

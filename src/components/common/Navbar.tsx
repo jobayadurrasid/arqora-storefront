@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router'
 import { useAuth } from '@/stores/authContextDef'
 import { useCart } from '@/stores/cartContextDef'
 import { ThemeSwitcher } from './ThemeSwitcher'
+import { BrandLogo } from './BrandLogo'
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
@@ -17,12 +18,8 @@ export function Navbar() {
     <header className="sticky top-0 z-40 w-full bg-surface border-b border-secondary/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo */}
-        <Link
-          to="/"
-          className="text-2xl font-bold tracking-[0.22em] uppercase text-secondary flex items-center"
-        >
-          A<span className="text-action">R</span>QO
-          <span className="text-action">R</span>A
+        <Link to="/" className="flex items-center">
+          <BrandLogo size="md" />
         </Link>
 
         {/* Center Nav Links */}

@@ -1,6 +1,7 @@
 import { useNavigate, Outlet } from 'react-router'
 import { useAuth } from '@/stores/authContextDef'
 import { ThemeSwitcher } from '@/components/common/ThemeSwitcher'
+import { BrandLogo } from '@/components/common/BrandLogo'
 
 export function AdminLayout() {
   const { user, logout } = useAuth()
@@ -17,10 +18,7 @@ export function AdminLayout() {
       <header className="sticky top-0 z-40 w-full bg-surface border-b border-secondary/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <span className="text-xl font-bold tracking-[0.22em] uppercase text-secondary">
-              A<span className="text-action">R</span>QO
-              <span className="text-action">R</span>A
-            </span>
+            <BrandLogo size="md" />
             <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-secondary text-secondary-foreground">
               Admin Console
             </span>

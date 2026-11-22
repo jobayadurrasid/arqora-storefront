@@ -1,11 +1,15 @@
-import { Navigate, createBrowserRouter } from 'react-router'
+import { createBrowserRouter } from 'react-router'
 import { RootLayout } from '../layouts/RootLayout'
+import { AdminLayout } from '../layouts/AdminLayout'
 import { CatalogPage } from '../features/products/components/CatalogPage'
 import { ProductDetailPage } from '../features/products/components/ProductDetailPage'
 import { CartPage } from '../features/cart/components/CartPage'
 import { CheckoutPage } from '../features/checkout/components/CheckoutPage'
 import { OrdersPage } from '../features/orders/components/OrdersPage'
 import { OrderDetailPage } from '../features/orders/components/OrderDetailPage'
+import { AdminDashboardPage } from '../features/account/components/AdminDashboardPage'
+import { AdminGuard } from '../features/account/components/AdminGuard'
+import { CustomerGuard } from '../features/account/components/CustomerGuard'
 import { RegisterPage, LoginPage } from '../features/auth'
 
 export const router = createBrowserRouter([
@@ -19,10 +23,30 @@ export const router = createBrowserRouter([
     element: <LoginPage />,
   },
 
-  // Customer Storefront Layout
+  // Dedicated Admin Console (No Customer Shopping/Cart Layout)
+  {
+    path: '/admin',
+    element: (
+      <AdminGuard>
+        <AdminLayout />
+      </AdminGuard>
+    ),
+    children: [
+      {
+        index: true,
+        element: <AdminDashboardPage />,
+      },
+    ],
+  },
+
+  // Customer Storefront Layout (Guarded: Admins are prevented & redirected to /admin)
   {
     path: '/',
-    element: <RootLayout />,
+    element: (
+      <CustomerGuard>
+        <RootLayout />
+      </CustomerGuard>
+    ),
     children: [
       {
         index: true,
@@ -49,11 +73,5 @@ export const router = createBrowserRouter([
         element: <OrderDetailPage />,
       },
     ],
-  },
-
-  // Fallback for routes coming in later PRs
-  {
-    path: '*',
-    element: <Navigate to="/" replace />,
   },
 ])
